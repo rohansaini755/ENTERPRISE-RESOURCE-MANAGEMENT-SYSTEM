@@ -1,0 +1,328 @@
+
+{% extends "dashboard_base.html" %} {% block content %}
+<div class="overlay" id="overlay"></div>
+
+<!--item review form-->
+<div class="popup" id="product_window_popup">
+  <div style="display:flex;">
+    <img src="{{ url_for('static', filename='images/seeds_128px.png', _external=True) }}"/>
+  </div>
+  <form class ="update-form-class" id="items">
+      <label>product</label>
+      <span style="width:400px;height:auto;display:block;" name="product" id="product"></span><br>
+      <label>Prices</label>
+      <span style="width:400px;height:auto;display:block;" name="prices" id="prices"></span><br>
+      <label>Total</label>
+      <span style="width:400px;height:auto;display:block;" name="total" id="total"></span><br>
+      <label>Paydown</label>
+      <input type="Number" name="paydown" id="paydown"/><br>
+      <label>Remaining</label>
+      <span style="width:400px;height:auto;display:block;" name="remaining" id="remaining"></span><br>
+      <button type="button" name="Update" onclick="sendRequestForAddItem({{ data['id'] }})">Submit</button>
+  </form> 
+</div>
+
+<!--farmer information update form -->
+<div class="popup" id="farmer_update_window_popup">
+    <div style="display:flex;">
+       <img src="{{ url_for('static', filename='images/farmer_256px.png', _external=True) }}">
+    </div>
+    <form class ="update-form-class">
+        <label>First Name</label>
+        <input type="text" name="fname" id="fname" placeholder="Enter First Name"><br>
+        <label>Middle Name</label>
+        <input type="text" name="mname" id="mname" placeholder="Enter middle Name"><br>
+        <label>Last Name</label>
+        <input type="text" name="mname" id="mname" placeholder="Enter middle Name"><br>
+        <label>Father Name</label>
+        <input type="text" name="faname" id="faname" placeholder="Enter Father's Name"><br>
+        <label>Mobile Number</label>
+        <input type="tel" name="mobile" id="mobile" placeholder="Enter Mobile Number"><br>
+        <label>Whatsapp Number</label>
+        <input type="tel" name="wmobile" id="wmobile" placeholder="Enter Whatsapp Number">
+        <br>
+        <label>Gender</label>
+        <select id="gender" name="gender" style="border:none;">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <input type="submit" name="Update">
+    </form>
+</div>
+<div class="body-content" id="body-content">
+<div style="display:flex;">
+    <img style="width:40px;height:40px;margin-top:12px;margin-left:8px;" src="{{ url_for('static', filename='images/seeds_128px.png', _external=True) }}"/>
+    <h2 style="font-weight:bold;margin-top:12px;">Products</h2>
+</div>
+<div style="display:flex;margin-top:15px;">
+    <div class="boxes">Total Product<br><span style="font-size:40px;font-weight:bold;" id="totalFarmer">0</span></div>
+    <div class="productlist_div" id="productList_div"></div>
+</div>
+<div class="line"></div>
+<div style="display:flex;">
+    <div class="search-bar">
+        Searchbar
+    </div>
+    <button id="itemReviewForm" style="margin-left:450px;background-color:#90EE90;border:none;border-radius:5px;padding:5px 15px;" >Next</button>
+</div>
+<div id="table-content" style="margin:30px;">
+    <table id="detail_table">
+        <tr style="border-bottom:1px solid #ccc;">
+            <th class ="col" style="width:10px;">S.N</th>
+            <th class = "col" style="width:200px;">Product</th>
+            <th class = "col" style="width:200px;">Company </th>
+            <th class = "col" style="width:200px;">Type</th>
+            <th class = "col" style="width:150px;">Price(INR)</th>
+            <th class = "col" style="width:200px;">Quantity</th>
+            <th class = "col" style="width:200px;">Total</th>
+            <th class = "col" style="width:100px;">Action</th>
+        </tr>
+        
+    </table>
+ </div>
+ <script>
+    window.addEventListener("load", fetchingProductList);
+    const itemList = new Map();
+    const spanid = document.getElementById('product');
+    const prices = document.getElementById('prices');
+    const totalspan = document.getElementById('total');
+    const paydowninput = document.getElementById('paydown');
+    const remaining = document.getElementById('remaining');
+
+    //send request to backend for adding item
+
+    function sendRequestForAddItem(id){
+      //alert(id);
+      const formData = document.getElementById('items');
+
+      var formdata = new FormData(formData);
+      formdata.append('fm_id',id);
+      formdata.append('product_list',spanid.textContent);
+      formdata.append('total_transaction',parseInt(totalspan.textContent));
+      formdata.append('total_due',parseInt(remaining.textContent));
+
+      fetch("http://127.0.0.1:8000/add_transaction/",{
+        method: "POST",
+        body: formdata
+      })
+      .then(response =>{
+        if(!response.ok){
+          throw new Error("Request Failed: "+response.status);
+        }
+        return response.json();
+      })
+      .then(data =>{
+        alert("successfully added");
+      })
+      .catch(error =>{
+        console.log("Error: ",error);
+      })
+    };
+
+    document.getElementById('itemReviewForm').addEventListener('click', function() {
+      
+      var totalPayment = 0;
+      if(itemList.size == 0){
+        alert("Add some product..");
+      }
+      else{
+          document.getElementById('overlay').style.display = 'block';
+          document.getElementById('product_window_popup').classList.add('active');
+          
+          itemList.forEach((item, pr_id) => {
+            spanid.textContent = spanid.textContent + item.name + "(" + item.quantity + "), ";
+            prices.textContent = prices.textContent + item.price + ", ";
+            totalPayment += item.price * item.quantity;
+          });
+          totalspan.textContent = totalPayment;
+          paydowninput.addEventListener('input', function(event) {
+            const inputValue = event.target.value.trim();
+            remaining.textContent = totalPayment - inputValue;
+          });
+      }
+
+    });
+    
+    document.getElementById('overlay').addEventListener('click', function() {
+      document.getElementById('overlay').style.display = 'none';
+      spanid.textContent = "";
+      prices.textContent = "";
+      document.getElementById('product_window_popup').classList.remove('active');
+    });
+
+    function addItem(pr_name,pr_id) {
+      const quantityInput = document.getElementById(`quantity-${pr_id}`);
+      const priceOutput = document.getElementById(`price-${pr_id}`);
+
+      const quantity = quantityInput.value;
+      const price = parseInt(priceOutput.textContent);
+
+      // Create the outer div with class "productlist"
+      const productlistDiv = document.createElement('div');
+      productlistDiv.classList.add('productlist');
+    
+      // Create the <span> element with the text "hello"
+      const helloSpan = document.createElement('span');
+      helloSpan.textContent = pr_name + "(" + quantity + ")";
+      helloSpan.setAttribute('id',pr_id);
+    
+      // Create the inner div with class "div"
+      const innerDiv = document.createElement('div');
+      innerDiv.classList.add('div');
+    
+      // Create the <img> element with class "img" and src attribute
+      const imgElement = document.createElement('img');
+      imgElement.classList.add('img');
+      imgElement.src = "{{ url_for('static', filename='images/multiply.png', _external=True) }}";
+      imgElement.addEventListener('click', function() {
+        productlistDiv.remove();
+        if (itemList.has(pr_id)) {
+          itemList.delete(pr_id);
+          console.log(`Removed item: ${pr_id}`);
+        } else {
+          console.log(`Item not found: ${pr_id}`);
+        }
+      });
+    
+      // Append the <img> element to the inner div
+      innerDiv.appendChild(imgElement);
+    
+      // Append the <span> and inner div to the outer div
+      productlistDiv.appendChild(helloSpan);
+      productlistDiv.appendChild(innerDiv);
+    
+      // Get the container div by its ID
+      const containerDiv = document.getElementById('productList_div');
+    
+      // Append the productlistDiv to the container div
+      containerDiv.appendChild(productlistDiv);
+      itemList.set(pr_id, { name: pr_name, quantity: quantity, price: price });
+      itemList.forEach((item, pr_id) => {
+        console.log(`Product ID: ${pr_id}`);
+        console.log(`Name: ${item.name}`);
+        console.log(`Quantity: ${item.quantity}`);
+        console.log(`price: ${item.price}`);
+      });
+    }
+    
+
+    function createRow(data) {
+        // Create a new row element
+        const row = document.createElement("tr");
+        row.style.borderBottom = "1px solid #ccc";
+        
+        
+    
+        // Create and populate the cells
+        const snCell = document.createElement("td");
+        snCell.textContent = data.pr_id;
+        snCell.style.paddingLeft = "10px";
+        row.appendChild(snCell);
+    
+        const nameCell = document.createElement("td");
+        nameCell.textContent = data.pr_name;
+        nameCell.style.paddingLeft = "10px";
+        row.appendChild(nameCell);
+    
+        const fatherNameCell = document.createElement("td");
+        fatherNameCell.textContent = data.pr_company;
+        row.appendChild(fatherNameCell);
+
+    
+        const mobileCell = document.createElement("td");
+        mobileCell.textContent = data.pr_type;
+        mobileCell.style.paddingLeft = "10px";
+        row.appendChild(mobileCell);
+    
+        const priceCell = document.createElement("td");
+        priceCell.textContent = data.pr_price;
+        priceCell.style.paddingLeft = "10px";
+        priceCell.id = `price-${data.pr_id}`;
+        row.appendChild(priceCell);
+
+        const QuantityCell = document.createElement("td");
+        const inputElement = document.createElement("input");
+        inputElement.type = "Number";
+        inputElement.value = 1;
+        inputElement.id = `quantity-${data.pr_id}`;
+        inputElement.addEventListener('keypress',function(event){
+          if(event.key == 'Enter'){
+            const totalPrice = inputElement.value * parseInt(priceCell.textContent);
+            total.textContent = totalPrice;
+          }
+        })
+        inputElement.style.width = '70px';
+        QuantityCell.appendChild(inputElement);
+        QuantityCell.style.width = "25px";
+        QuantityCell.style.paddingLeft = "10px";
+        QuantityCell.style.whiteSpace = "nowrap";
+        QuantityCell.style.overflow = "hidden";
+        QuantityCell.style.textOverflow = "ellipsis";
+        
+        row.appendChild(QuantityCell);
+
+        const total = document.createElement("td");
+        total.textContent = data.pr_price;
+        total.style.paddingLeft = "10px";
+        row.appendChild(total);
+    
+        const actionCell = document.createElement("td");
+        const actionDiv = document.createElement("div");
+        actionDiv.style.display = "flex";
+        actionDiv.style.marginLeft = "10px";
+        actionDiv.innerHTML = `
+          <a href="http://127.0.0.1:5000/farmer"> 
+            <img style="width:20px;height:20px;" src="{{ url_for('static', filename='images/view.png', _external=True) }}"/>
+          </a>
+          <button id="addProduct" style="border:none;" onclick="addItem('${data.pr_name}','${data.pr_id}')">
+            <img style="width:20px;height:20px;margin-left:9px;" src="{{ url_for('static', filename='images/plus.png', _external=True) }}"/>
+
+          </button>
+        `;
+        actionCell.appendChild(actionDiv);
+        row.appendChild(actionCell);
+    
+        // Append the new row to the table
+        const table = document.getElementById("detail_table");
+        table.appendChild(row);
+      }
+
+
+    function fetchingProductList(){
+        fetch("http://127.0.0.1:8000/product_list/",{
+            method : 'POST'
+        })
+        .then(response => {
+            if (!response.ok) {
+              throw new Error("Request failed with status: " + response.status);
+            }
+            return response.json(); // Parse the response as JSON
+          })
+          .then(data => {
+            // Handle the API response data
+            const listData = data.list
+            const listArray = JSON.parse(listData)
+            var length = listArray.length;
+            document.getElementById('totalFarmer').textContent = length;
+            for (const item of listArray) {
+                createRow(item); // Create a row for each item in the array
+            }
+            // Process and display the data as needed
+          })
+          .catch(error => {
+            // Handle any errors
+            console.error("Error:", error);
+          });
+    }
+    document.getElementById('openPopupButton').addEventListener('click', function() {
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('farmer_update_window_popup').classList.add('active');
+      });
+      
+      document.getElementById('overlay').addEventListener('click', function() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('farmer_update_window_popup').classList.remove('active');
+      });
+ </script>
+</div>
+ {% endblock %}

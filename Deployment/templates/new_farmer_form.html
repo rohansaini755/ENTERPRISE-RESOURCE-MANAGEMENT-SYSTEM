@@ -1,0 +1,98 @@
+{% extends "dashboard_base.html" %} {% block content %}
+<div class="body-content">
+<div style="display:flex;">
+    <a href="http://127.0.0.1:5000/dashboard"><img style="width:30px;height:30px;" src="static/images/left-arrow.png"/></a>
+    <img style="width:30px;height:30px;" src="static/images/farmer (2).png"/>
+    <span style="color:#6CDB4D;margin-left:6px;margin-top:5px;font-size:18px;">Farmer</a>
+</div>
+<h5 style="margin-top:20px;">Basic Informations</h5>
+<form style="width:1200px;" id="farmerForm" method="post">
+    <div id="form_zero_row" style="width:1200px:height:150px;text-align:center;">
+        <label for="imageUpload">
+            <img src="static/images/farmer_256px.png" alt="Image" width="150" height="150">
+        </label><br>
+        <input type="file" id="imageUpload" name="imageUpload">
+    </div>
+    <div id="form_first_row" style="display:flex;margin-top:8px;">
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="fname"> First Name<span style="color:red">*</span></label><br>
+            <input placeholder="Enter Farmer First Name" style="width:400px;border:none;" type="text" id="fname" name="fname" required>
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="mname"> Middle Name</label><br>
+            <input placeholder="Enter Farmer Middle Name" style="width:400px;border:none;" type="text" id="mname" name="mname">
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="lname"> Last Name<span style="color:red">*</span></label><br>
+            <input placeholder="Enter Farmer Last Name" style="width:400px;border:none;" type="text" id="lname" name="lname" required>
+        </div>
+    </div>
+    <div id="form_second_row" style="display:flex;margin-top:8px;">
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="fathername"> Father's Name<span style="color:red">*</span></label><br>
+            <input placeholder="Farmer's Father Name" style="width:400px;border:none;" type="text" id="fathername" name="fathername" required>
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="gender">Gender</label><br>
+            <select id="gender" name="gender" style="border:none;">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="address">Address<span style="color:red">*</span></label><br>
+            <input placeholder="Farmer's Address" style="width:400px;border:none;" type="text" id="address" name="address">
+        </div>
+        
+    </div>
+    <div id="form_third_row" style="display:flex;margin-top:8px;">
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="mobile">Mobile No.<span style="color:red">*</span></label><br>
+            <input style="border:none;" type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" required>
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="whatsappmobile">Whatsapp Mobile No.</label><br>
+            <input style="border:none;" type="tel" id="whatsappmobile" name="whatsappmobile" placeholder="Whatsapp mobile number">
+        </div>
+    </div>
+    <div style="text-align:center;margin-top:50px;">
+        <input style="background-color:#6CDB4D;border:none;border-radius:4px;height:30px;width:70px;"type="submit" value="submit" onclick="submitForm()">
+    </div>
+</form>
+</div>
+<script>
+    function submitForm() {
+        // Get the form element
+        var form = document.getElementById("farmerForm");
+      
+        // Get the form data
+        var formData = new FormData(form);
+      
+        // Send the form data to the API
+        fetch("http://127.0.0.1:8000/new_farmer/", {
+          method: "POST",
+          body: formData
+        })
+        .then(response => {
+            if(response.ok){
+                window.location.href = "http://127.0.0.1:5000/dashboard";
+            }
+            else{
+                console.log("error dsa");
+                alert("Farmer is already exists.");
+            }
+        })
+        .then(data => {
+          // Handle the API response
+          // console.log(data);
+          // console.log("done");
+          // alert("success");
+          // window.location.href = "http://127.0.0.1:5000/dashboard";
+          // Additional code here...
+        })
+        .catch(error => {
+        });
+      }
+      
+</script>
+{% endblock %}

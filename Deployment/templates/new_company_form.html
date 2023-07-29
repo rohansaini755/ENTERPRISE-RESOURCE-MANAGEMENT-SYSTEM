@@ -1,0 +1,119 @@
+{% extends "dashboard_base.html" %} {% block content %}
+<div class="body-content">
+<div style="display:flex;">
+    <a href="http://127.0.0.1:5000/aso_company"><img style="width:30px;height:30px;" src="static/images/left-arrow.png"/></a>
+    <img style="width:30px;height:30px;" src="static/images/company_256px.png"/>
+    <span style="color:#6CDB4D;margin-left:6px;margin-top:5px;font-size:18px;">Company</a>
+</div>
+<h5 style="margin-top:20px;">Basic Informations</h5>
+<form style="width:1200px;" id="companyForm" method="post">
+    <div id="form_zero_row" style="width:1200px:height:150px;text-align:center;">
+        <label for="imageUpload">
+            <img src="static/images/company_256px.png" alt="Image" width="150" height="150">
+        </label><br>
+        <input type="file" id="imageUpload" name="imageUpload">
+    </div>
+    <div id="form_first_row" style="display:flex;margin-top:8px;">
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="cname">Company's Name<span style="color:red">*</span></label><br>
+            <input placeholder="Enter Company Name" style="width:400px;border:none;" type="text" id="cname" name="cname" required>
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="ceoname">Company's CEO<span style="color:red">*</span></label><br>
+            <input placeholder="Enter Company CEO Name" style="width:400px;border:none;" type="text" id="ceoname" name="ceoname" required>
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="address">Address<span style="color:red">*</span></label><br>
+            <input placeholder="Enter Company's Address" style="width:400px;border:none;" type="text" id="address" name="address" required>
+        </div>
+    </div>
+    <div id="form_second_row" style="display:flex;margin-top:8px;">
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="phone">Phone No.<span style="color:red">*</span></label><br>
+            <input placeholder="Company's Phone Number" style="width:400px;border:none;" type="tel" id="phone" name="phone" required>
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="type">Company's Type<span style="color:red">*</span></label><br>
+            <select id="type" name="type" style="border:none;">
+                <option value="pesticide">Pesticide</option>
+                <option value="seeds">Seeds</option>
+            </select>
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="whatsapp_no">Whatsapp No.</label><br>
+            <input placeholder="Company's Whatsapp Number" style="width:400px;border:none;" type="tel" id="whatsapp_no" name="whatsapp_no">
+        </div>
+    </div>
+    <div id="form_third_row" style="display:flex;margin-top:8px;">
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="dealer_name">Dealer Name</label><br>
+            <input placeholder="Company's Dealer Name" style="width:400px;border:none;" type="text" id="dealer_name" name="dealer_name">
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="dealer_address">Dealer Address</label><br>
+            <input placeholder="Company's Dealer Name" style="width:400px;border:none;" type="text" id="dealer_address" name="dealer_address">
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="dealer_mobile_no">Dealer Mobile No.</label><br>
+            <input placeholder="Company's Dealer Name" style="width:400px;border:none;" type="tel" id="dealer_mobile_no" name="dealer_mobile_no">
+        </div>
+    </div>
+    <div id="form_forth_row" style="display:flex;margin-top:8px;">
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="dealer_whatsapp_no">Dealer Whatsapp No.</label><br>
+            <input placeholder="Dealer Whatsapp No" style="width:400px;border:none;" type="tel" id="dealer_whatsapp_no" name="dealer_whatsapp_no">
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="dealer_address">Dealer Address</label><br>
+            <input placeholder="Company's Dealer Name" style="width:400px;border:none;" type="text" id="dealer_address" name="dealer_address">
+        </div>
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="dealer_mobile_no">Dealer Mobile No.</label><br>
+            <input placeholder="Company's Dealer Name" style="width:400px;border:none;" type="tel" id="dealer_mobile_no" name="dealer_mobile_no">
+        </div>
+    </div>
+    <div id="form_forth_row" style="display:flex;margin-top:8px;">
+        <div>
+            <label style="width:400px;border:none;font-weight:bold;" for="email">Email</label><br>
+            <input placeholder="Company's Email" style="width:400px;border:none;" type="text" id="email" name="email">
+        </div>
+    </div>
+    <div style="text-align:center;margin-top:50px;">
+        <input style="background-color:#6CDB4D;border:none;border-radius:4px;height:30px;width:70px;"type="submit" value="submit" onclick="submitForm()">
+    </div>
+</form>
+</div>
+<script>
+    function submitForm() {
+        // Get the form element
+        var form = document.getElementById("companyForm");
+      
+        // Get the form data
+        var formData = new FormData(form);
+      
+        // Send the form data to the API
+        fetch("http://127.0.0.1:8000/new_company/", {
+          method: "POST",
+          body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+            throw new Error("Request failed with status: " + response.status);
+            }
+            //alert("company added");
+            //window.location.href="http://127.0.0.1:5000/aso_company"; // Parse the response as JSON
+            return response.json();
+        })
+        .then(data => {
+            // Handle the API response data
+            
+            // Process and display the data as needed
+        })
+        .catch(error => {
+            // Handle any errors
+            alert(error);
+        });
+      }
+      
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "dashboard_base.html" %}
+{% block content %}
+    <form id="login-form" method="post">
+        <label for="bid">Branch ID</label>
+        <input type="text" name="bid" id="bid">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password">
+        <input type="submit" onclick="submitForm(event)">
+    </form>
+    <script>
+        function submitForm(event) {
+            event.preventDefault(); // Prevent form submission
+            // Get the form element
+            var form = document.getElementById("login-form");
+          
+            // Get the form data
+            var formData = new FormData(form);
+          
+            // Send the form data to the API
+            fetch("http://127.0.0.1:8000/login/", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    const sessionId = document.cookie.match(/(?<=bid=)[^;]+/)[0];
+                    console.log(sessionId);
+                    window.location.href = "http://127.0.0.1:5000/dashboard";
+                } else {
+                    return response.text(); // Return the response body as text
+                }
+            })
+            .then(data => {
+                alert(data); // Display the response text
+            })
+            .catch(error => {
+                alert(sessionId);
+            });
+        }
+    </script>
+{% endblock %}

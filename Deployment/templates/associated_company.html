@@ -1,0 +1,172 @@
+
+{% extends "dashboard_base.html" %} {% block content %}
+<div class="body-content">
+<div style="display:flex;">
+    <img style="width:40px;height:40px;margin-top:12px;margin-left:8px;" src="static/images/farmer (2).png"/>
+    <h2 style="font-weight:bold;margin-top:12px;">Farmar</h2>
+</div>
+<div style="display:flex;margin-top:15px;">
+    <div class="boxes">Total Company<br><span style="font-size:40px;font-weight:bold;" id="totalCompany">0</span></div>
+</div>
+<div class="line"></div>
+<div style="display:flex;">
+    <div class="search-bar">
+        Searchbar
+    </div>
+<img style="width:30px;height:30px;margin-left:400px;" src="static/images/company.png"/>
+<a href="http://127.0.0.1:5000/new_company" style="color:#6CDB4D;margin-left:6px;margin-top:5px;font-size:18px;">+New Company</a>
+</div>
+<div id="table-content" style="margin:30px;">
+    <table id="detail_table">
+        <tr style="border-bottom:1px solid #ccc;">
+            <th class ="col" style="width:10px;">S.N</th>
+            <th class = "col" style="width:200px;">Company's Code</th>
+            <th class = "col" style="width:200px;">Company's Name</th>
+            <th class = "col" style="width:200px;">Company's CEO</th>
+            <th class = "col" style="width:200px;">Address</th>
+            <th class = "col" style="width:200px;">Mobile No.</th>
+            <th class = "col" style="width:150px;">Total Transaction</th>
+            <th class = "col" style="width:100px;">Action</th>
+        </tr>
+    </table>
+ </div>
+</div>
+<script>
+    window.addEventListener("load", fetchingCompanyList);
+
+    function createRow(data) {
+        // Create a new row element
+        const row = document.createElement("tr");
+        row.style.borderBottom = "1px solid #ccc";
+        
+        
+    
+        // Create and populate the cells
+        const snCell = document.createElement("td");
+        snCell.textContent = data.cmp_id;
+        snCell.style.paddingLeft = "10px";
+        snCell.setAttribute("id", data.cmp_id);
+        row.appendChild(snCell);
+
+        const cmpCodeCell = document.createElement("td");
+        cmpCodeCell.textContent = data.cmp_code;
+        cmpCodeCell.style.paddingLeft = "10px";
+        row.appendChild(cmpCodeCell);
+    
+        const nameCell = document.createElement("td");
+        nameCell.textContent = data.company_name;
+        nameCell.style.paddingLeft = "10px";
+        row.appendChild(nameCell);
+    
+        const CeoCell = document.createElement("td");
+        CeoCell.textContent = data.ceo_name;
+        CeoCell.style.paddingLeft = "10px";
+        row.appendChild(CeoCell);
+    
+        const addressCell = document.createElement("td");
+        addressCell.textContent = data.address;
+        addressCell.style.paddingLeft = "10px";
+        addressCell.style.whiteSpace = "nowrap";
+        addressCell.style.overflow = "hidden";
+        addressCell.style.textOverflow = "ellipsis";
+        
+        row.appendChild(addressCell);
+
+    
+        const mobileCell = document.createElement("td");
+        mobileCell.textContent = data.mobile;
+        mobileCell.style.paddingLeft = "10px";
+        row.appendChild(mobileCell);
+    
+        const totalDueCell = document.createElement("td");
+        totalDueCell.textContent = "";
+        totalDueCell.style.paddingLeft = "10px";
+        row.appendChild(totalDueCell);
+    
+        const actionCell = document.createElement("td");
+        const actionDiv = document.createElement("div");
+        actionDiv.style.display = "flex";
+        actionDiv.style.marginLeft = "10px";
+        var id = data.cmp_id;
+        actionDiv.innerHTML = `
+            <button id="viewDetail" onclick="sendPostRequest(${id})">
+                <img style="width:20px;height:20px;" src="static/images/view.png"/>
+            </button>
+          <button id="openPopupButton" style="border:none;">
+            <img style="width:20px;height:20px;margin-left:9px;" src="static/images/editing.png"/>
+          </button>
+        `;
+        actionCell.appendChild(actionDiv);
+        row.appendChild(actionCell);
+    
+        // Append the new row to the table
+        const table = document.getElementById("detail_table");
+        table.appendChild(row);
+      }
+
+      function sendPostRequest(id) {
+        // Create a form data object
+        const formData = new FormData();
+        formData.append('id', id);
+    
+        // Send the POST request using Fetch API
+        fetch('http://127.0.0.1:5000/company_detail_page/'+id, {
+            method: 'GET',
+        })
+        .then(response => {
+            if (response.ok) {
+                // Open the new page in a new tab or window
+                alert(response.url);
+                window.open(response.url, '_blank');
+            } else {
+                alert("error in response");
+                console.error('Error:', response.statusText);
+            }
+        })
+        .catch(error => {
+            alert(error);
+            console.error('Error:', error);
+        });
+    }
+    
+    
+
+    function fetchingCompanyList(){
+        fetch("http://127.0.0.1:8000/company_list/",{
+            method : 'POST'
+        })
+        .then(response => {
+            if (!response.ok) {
+              throw new Error("Request failed with status: " + response.status);
+            }
+            return response.json(); // Parse the response as JSON
+          })
+          .then(data => {
+            // Handle the API response data
+            const listData = data.list
+            const listArray = JSON.parse(listData)
+            console.log(listArray);
+            var length = listArray.length;
+            document.getElementById('totalCompany').textContent = length;
+            for (const item of listArray) {
+                createRow(item); // Create a row for each item in the array
+            }
+            // Process and display the data as needed
+          })
+          .catch(error => {
+            // Handle any errors
+            alert("error");
+            console.error("Error:", error);
+          });
+    }
+    // document.getElementById('openPopupButton').addEventListener('click', function() {
+    //    document.getElementById('overlay').style.display = 'block';
+    //    document.getElementById('farmer_update_window_popup').classList.add('active');
+    //  });
+    //  
+    //  document.getElementById('overlay').addEventListener('click', function() {
+    //    document.getElementById('overlay').style.display = 'none';
+    //    document.getElementById('farmer_update_window_popup').classList.remove('active');
+    //  });
+ </script>
+ {% endblock %}

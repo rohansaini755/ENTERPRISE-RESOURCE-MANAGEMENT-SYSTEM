@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block content %}
+<section class="header" style="background-image: url('{{ url_for('static', filename='images/vegge.jpg') }}');">
+    <div id= "header_name">
+        <h1>Saini pestiside</h1>
+        <p style="text-align:center;font-size5:50px;font-weight:bold;color:red;margin-top:-50px;">Nagar Panchayat Mahuwadabra, Bhutpuri Road Jaspur(Udham Singh Nagar) Uttrakhand</p>
+    </div>
+</section>
+<div class ="offers">
+    <h1 style="text-align:center;font-size:20px;">Facilities We offer</h1>
+    <div class="offer">
+        <div class="col1" style="background-image: url('{{ url_for('static',filename='images/vegge.jpg')}}')"></div>
+        <div class="col2">Welcome to our vegetable seeds shop, 
+                          where nature's bounty awaits your green 
+                          thumb. Explore our diverse collection of
+                          premium seeds and embark on a journey of 
+                          homegrown flavors. Cultivate your own garden 
+                          oasis, nurturing vibrant vegetables from seed 
+                          to harvest. Taste the satisfaction of sustainable 
+                          living and embrace the joy of growing your own 
+                          delicious and nutritious produce. Visit us today 
+                          and let the magic of gardening unfold in your backyard
+        </div>
+    </div>
+    <div class="offer">
+        <div class="col1" style="background-image: url('{{ url_for('static',filename='images/pesticide.webp')}}')"></div>
+        <div class="col2">Protect your harvest with confidence! 
+                          Step into our pesticide shop and discover a 
+                          wide range of reliable solutions to safeguard
+                          your crops. From organic alternatives to 
+                          cutting-edge formulations, we offer the 
+                          finest selection of pesticides to combat 
+                          pests effectively. Safeguard your investment 
+                          and promote healthy growth with our trusted products.
+                          Trust our expertise and join the league of successfull
+                          growers who choose our pesticide shop for quality and peace of mind.
+        </div>
+    </div>
+</div>
+{% endblock %}

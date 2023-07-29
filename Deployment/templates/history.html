@@ -1,0 +1,84 @@
+{% extends "dashboard_base.html" %} {% block content %}
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="farmer_content_update_popup">
+    <div style="display:flex;">
+        <img src="static/images/farmer_256px.png">``
+    </div>
+    <form class ="update-form-class">
+        <label>Date</label>
+        <input type="date" name="date" id="date" placeholder="Enter Date"><br>
+        <label>Content</label>
+        <input type="text" name="content" id="content" placeholder="Enter Content"><br>
+        <label>Total payment</label>
+        <input type="text" name="tpatment" id="tpayment" placeholder="Total Payment"><br>
+        <label>Total Paydown</label>
+        <input type="text" name="tpaydown" id="tpaydown" placeholder="Total Paydown"><br>
+        <label>Notes</label>
+        <input type="text" name="notes" id="notes" placeholder="Notes"><br>
+        <input type="submit" name="Update">
+    </form>
+</div>
+<div class="body-content">
+<div style="display:flex;">
+    <img style="width:40px;height:40px;margin-top:12px;margin-left:8px;" src="static/images/farmer (2).png"/>
+    <h2 style="font-weight:bold;margin-top:12px;">Farmar</h2>
+</div>
+<div style="display:flex;margin-top:15px;">
+    <div class="boxes">Total Transactions<br><span style="font-size:40px;font-weight:bold;">1</span></div>
+    <div class="boxes">Total Revenue<br><span style="font-size:40px;font-weight:bold;">100</span></div>
+</div>
+<div class="line"></div>
+<div style="display:flex;">
+    <div class="search-bar">
+        Searchbar
+    </div>
+</div>
+<div id="table-content" style="margin:30px;">
+    <table >
+        <tr style="border-bottom:1px solid #ccc;">
+            <th class ="col" style="width:10px;">S.N</th>
+            <th class = "col" style="width:100px;">Farmer Id</th>
+            <th class = "col" style="width:200px;">Name</th>
+            <th class = "col" style="width:200px;">Address</th>
+            <th class = "col" style="width:200px;">Details</th>
+            <th class = "col" style="width:150px;">Total payment(INR)</th>
+            <th class = "col" style="width:150px;">Total paydown(INR)</th>
+            <th class = "col" style="width:100px;">Action</th>
+        </tr>
+        <tr>
+            <td style="padding-left:10px;">1</td>
+            <td style="padding-left:10px;">20021427</td>
+            <td style="padding-left:10px;">Rohan saini</td>
+            <td style="padding-left:10px;">Jaspur</td>
+            <td style="padding-left:10px;">1kg pea seed</td>
+            <td style="padding-left:10px;">100</td>
+            <td style="padding-left:10px;">80</td>
+            <td>
+                <div style="display:flex;margin-left:10px;">
+                    <a href="http://127.0.0.1:5000/farmer">
+                        <img style="width:20px;height:20px;" src="static/images/view.png"/>
+                    </a>
+                    <button id="update_content" class="button">
+                        <img style="width:20px;height:20px;margin-left:9px;" src="static/images/editing.png"/>
+                    </button>
+                    <a href="">
+                        <img style="width:20px;height:20px;margin-left:9px;" src="static/images/delete.png"/>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    </table>
+ </div>
+</div>
+<script>
+      document.getElementById('update_content').addEventListener('click', function() {
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('farmer_content_update_popup').classList.add('active');
+      });
+      
+      document.getElementById('overlay').addEventListener('click', function() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('farmer_content_update_popup').classList.remove('active');
+      });
+ </script>
+{% endblock %}

@@ -1,0 +1,60 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Saini Pesticide</title>
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">      
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a style = "margin-left:-150px;color:#6CDB4D" class="navbar-brand" href="#">Saini Pestiside</a>
+            <a style = "margin-left:500px;color:#6CDB4D" class="" href="/home">Home</a>
+            <a style = "margin-left:-100px;color:#6CDB4D" class="" href="#">Farmar</a>
+            <a style = "margin-left:-100px;color:#6CDB4D" class="" href="#">Shopkeepers</a>
+            <button style="margin-right:-150px;" class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Help</button>
+        </div>
+    </nav>
+    <div class="body" style="display:flex" id="dashboard_body">
+         <nav class="sidenavbar">
+            <ul>
+               <li class="sidenav-content">
+                  <div class="" role="button">
+                    <img style="width:30px;height:30px;" src="{{ url_for('static', filename='images/farmer (2).png', _external=True) }}"/>
+                    <a href="http://127.0.0.1:5000/dashboard" style="color:black;">Farmar</a>
+                  </div>
+               </li> 
+               <li class="sidenav-content">
+                    <div class="" role="button">
+                        <img style="width:30px;height:30px;font-weight:bold;" src="{{ url_for('static', filename='images/office-building.png', _external=True) }}"/>
+                        <a href="http://127.0.0.1:5000/aso_company" style="color:black;">Aso. Company</a>
+                    </div>
+                </li> 
+                <li class="sidenav-content">
+                    <div class="" role="button">
+                        <img style="width:30px;height:30px;" src="{{ url_for('static', filename='images/shopkeeper (1).png', _external=True) }}"/>
+                       <a href="http://127.0.0.1:5000/branches" style="color:black;">Branches</a>
+                    </div>
+                </li> 
+                <li class="sidenav-content">
+                    <div class="" role="button">
+                        <img style="width:30px;height:30px;" src="{{ url_for('static', filename='images/history.png', _external=True) }}"/>
+                       <a href="http://127.0.0.1:5000/history" style="color:black;">History</a>
+                    </div>
+                </li> 
+            </ul>
+         </nav>
+         {% block content %}{% endblock %}
+         
+    </div>
+</body>
+
+
+</html>

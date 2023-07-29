@@ -1,0 +1,110 @@
+{% extends "dashboard_base.html" %} {% block content %}
+<div class="body-content">
+    <div style="display:flex;">
+        <a href="http://127.0.0.1:5000/aso_company"><img style="width:30px;height:30px;" src="{{ url_for('static', filename='images/left-arrow.png', _external=True) }}"/></a>
+        <span style="color:#6CDB4D;margin-left:6px;margin-top:5px;font-size:18px;">Rohan</a>
+    </div>
+    <div style="margin-top:20px;"class="search-bar">
+        <input type="text" placeholder="Search" style="width:400px;">
+    </div>
+    <div class="grid-container" id="gridContainer"></div>
+
+</div>
+<script>
+    const gridContainer = document.getElementById('gridContainer');
+    function addGridItem(item) {
+        const gridItem = document.createElement('div');
+        const gridTotalPrice = document.createElement('div');
+        const gridButton = document.createElement('div');
+        const gridName = document.createElement('div');
+        const notesbtn = document.createElement('img');
+        const addbtn = document.createElement('img');
+        notesbtn.src="{{ url_for('static', filename='images/info.png', _external=True) }}";
+        addbtn.src = "{{ url_for('static', filename='images/plus.png', _external=True) }}";
+        notesbtn.style = "margin-left:2px";
+        addbtn.style = "margin-left:20px";
+
+        const itemContainer = document.createElement('div');
+
+        for(const pr of item.products){
+            const tempcont1 = document.createElement('div');
+
+            const itemname = document.createElement('div');
+            const itemprise = document.createElement('div');
+            const itemcontity = document.createElement('input');
+
+            
+            itemname.classList.add('item-name');
+            itemprise.classList.add('item-prise');
+            itemcontity.classList.add('item-contity');
+            itemcontity.value = 0;
+
+            tempcont1.classList.add('temp-item');
+            itemname.textContent = pr.name;
+            itemprise.textContent = pr.price;
+            tempcont1.appendChild(itemname);
+            tempcont1.appendChild(itemprise);
+            tempcont1.appendChild(itemcontity);
+            itemContainer.appendChild(tempcont1);
+            
+            const childDivs = itemContainer.getElementsByClassName('temp-item');
+            const childCount = childDivs.length;
+
+            itemContainer.style.setProperty('--child-count',childCount);
+            itemname.style.setProperty('--child-count',childCount);
+        }
+
+        gridName.style = "color:red;margin-left:-310px;font-weight:bold;size:11px;"
+        gridName.textContent = item.tmp_name.charAt(0).toUpperCase() + item.tmp_name.slice(1);
+
+        gridButton.classList.add('grid-button');
+        gridTotalPrice.classList.add('grid-totoalPrice');
+
+        const totalprise = document.createElement('div');
+        totalprise.textContent = "Total Prise: ";
+        const totalinr = document.createElement('span');
+        totalinr.textContent = "0";
+        totalinr.style = "height:30px;width:80px;border-radius:5px;border:1px solid black;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;";
+
+        totalinr.style.setProperty('margin-left','10px');
+        gridTotalPrice.appendChild(totalprise);
+        gridTotalPrice.appendChild(totalinr);
+
+        itemContainer.classList.add('item-cont');
+        gridItem.appendChild(itemContainer);
+
+        gridItem.classList.add('grid-item');
+        gridContainer.appendChild(gridItem);
+        gridItem.appendChild(gridName);
+        gridItem.appendChild(gridTotalPrice);
+        gridItem.appendChild(gridButton);
+        gridButton.appendChild(notesbtn);
+        gridButton.appendChild(addbtn);
+    }
+
+    fetch("http://127.0.0.1:8000/template/",{
+        method:'POST'
+    })
+    .then(response => {
+        if(!response.ok)
+        {
+            alert(response);
+            throw new Error("Request failed with error: "+response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const dataArray = data.list;
+    // Since data.list is already an array, no need for JSON.parse
+        for (const item of dataArray) {
+            addGridItem(item);
+            console.log("done");
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    })
+    
+
+</script>
+{% endblock %}

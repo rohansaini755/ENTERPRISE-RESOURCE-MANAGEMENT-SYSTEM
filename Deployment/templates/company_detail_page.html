@@ -1,0 +1,85 @@
+{% extends "dashboard_base.html" %}
+{% block content %}
+<div class="body-content">
+    <div style="width:1050px;height:230px;display:flex;">
+        <div id="photo_id_div" style="margin:10px;border:1px solid black;height:210px;width:210px;">
+            <img style="width:208px;height:208px;" src="{{ url_for('static', filename='images/company_256px.png', _external=True) }}"/>
+        </div>
+        <div style="margin:10px;border:1px solid black;height:208px;width:1046px;">
+            <div class="farmer_detail_div">
+                <span class="farmer_detail_span_entry">Company Name:</span>
+                <div class="farmer_detail_div_entry">{{ data['company_name'] }}</div>
+                <span class="farmer_detail_span_entry">CEO Name:</span>
+                <div class="farmer_detail_div_entry">{{ data['ceo_name'] }}</div>
+                <span class="farmer_detail_span_entry">Address:</span>
+                <div class="farmer_detail_div_entry">{{ data['address'] }}</div>
+            </div>
+            <div class="farmer_detail_div">
+                <span class="farmer_detail_span_entry">Dealer Name:</span>
+                <div class="farmer_detail_div_entry">{{ data['dealer_name'] }}</div>
+                <span class="farmer_detail_span_entry">Dealer Adress:</span>
+                <div class="farmer_detail_div_entry">{{ data['dealer_address'] }}</div>
+                <span class="farmer_detail_span_entry">Dealer Mobile No.:</span>
+                <div class="farmer_detail_div_entry">{{ data['dealer_mobile'] }}</div>
+            </div>
+            <div class="farmer_detail_div">
+                <span class="farmer_detail_span_entry">Dealer WhatsApp No.:</span>
+                <div class="farmer_detail_div_entry">{{ data['dealer_whatsapp_mobile'] }}</div>
+                <span class="farmer_detail_span_entry">Company Mobile No.:</span>
+                <div class="farmer_detail_div_entry">{{ data['mobile'] }}</div>
+                <span class="farmer_detail_span_entry">Company's Type.:</span>
+                <div class="farmer_detail_div_entry">{{ data['company_type'] }}</div>
+            </div>
+            <div class="farmer_detail_div">
+                <span class="farmer_detail_span_entry">Company Id:</span>
+                <div class="farmer_detail_div_entry">{{ data['cmp_id'] }}</div>
+                <span class="farmer_detail_span_entry">Company Mail:</span>
+                <div class="farmer_detail_div_entry">{{ data['email'] }}</div>
+            </div>
+            <div class="farmer_detail_div"></div>
+        </div>
+    </div>  
+    <div style="width:1300px;height:auto;margin-top:20px;">
+        <div style="display:flex;margin-top:15px;">
+            <div class="boxes">Total payment<br><span style="font-size:40px;font-weight:bold;">100000</span></div>
+            <div class="boxes">Total paydown<br><span style="font-size:40px;font-weight:bold;">8000</span></div>
+            <div class="boxes">Remaining Amount<br><span style="font-size:40px;font-weight:bold;">2000</span></div>
+            <div>
+                <img style="width:30px;height:30px;margin-left:400px;" src="{{ url_for('static', filename='images/company.png', _external=True) }}"/>
+                <a href="http://127.0.0.1:5000/company_product/{{ data['cmp_id'] }}" style="color:#6CDB4D;margin-left:6px;margin-top:5px;font-size:18px;">Company's Products</a>
+            </div>
+        </div>
+        <div id="table-content" style="margin:30px;">
+            <table>
+                <tr style="border-bottom:1px solid #ccc;">
+                    <th class="col" style="width:10px;">S.N</th>
+                    <th class="col" style="width:200px;">Date</th>
+                    <th class="col" style="width:400px;">Content</th>
+                    <th class="col" style="width:150px;">Total payment(INR)</th>
+                    <th class="col" style="width:150px;">Total paydown(INR)</th>
+                    <th class="col" style="width:150px;">Notes</th>
+                    <th class="col" style="width:100px;">Action</th>
+                </tr>
+                <tr>
+                    <td style="padding-left:10px;">1</td>
+                    <td style="padding-left:10px;">02-06-2023</td>
+                    <td style="padding-left:10px;">100kg Bajra</td>
+                    <td style="padding-left:10px;">10000</td>
+                    <td style="padding-left:10px;">8000</td>
+                    <td style="padding-left:10px;"></td>
+                    <td>
+                        <div style="display:flex;margin-left:10px;">
+                            <button class="button" onclick="">
+                                <img style="width:20px;height:20px;margin-left:9px;" src="{{ url_for('static', filename='images/editing.png', _external=True) }}"/>
+                            </button>
+                            <button class="button" onclick="">
+                                <img style="width:20px;height:20px;margin-left:9px;" src="{{ url_for('static', filename='images/delete.png', _external=True) }}"/>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

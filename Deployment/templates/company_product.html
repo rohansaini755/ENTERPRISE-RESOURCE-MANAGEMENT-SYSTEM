@@ -1,0 +1,234 @@
+{% extends "dashboard_base.html" %} {% block content %}
+<div class="overlay" id="overlay"></div>
+    <div class="popup" id="add_product_window_popup">
+        <div style="display:flex;">
+            <img src="{{ url_for('static', filename='images/seeds_128px.png', _external=True) }}">
+        </div>
+        <form class ="update-form-class" id="add_product_form">
+            <label>Company Id</label>
+            <input value="{{ data['cmp_id'] }}" style="color:black;" type="text" name="pr_company" id="pr_company" placeholder="Company id" required><br>
+            <label>Product</label>
+            <input style="color:black;" type="text" name="pr_name" id="pr_name" placeholder="Enter Product Name" required><br>
+            <label>Salt</label>
+            <input style="color:black;" type="text" name="pr_salt" id="pr_salt" placeholder="Enter added salt"><br>
+            <label>Detail</label>
+            <input style="color:black;" type="text" name="pr_detail" id="pr_detail" placeholder="Enter product detail"><br>
+            <label>Instructions</label>
+            <input style="color:black;" type="text" name="pr_instructions" id="pr_instructions" placeholder="Enter product instructions"><br>
+            <label>Type</label>
+            <select id="pr_type" name="pr_type" style="border:none;" required>
+                <option value="liquid">Liquid</option>
+                <option value="powder">Powder</option>
+                <option value="solid">Solid</option>
+            </select><br>
+            <label>Price</label><br>
+            <input style="color:black;" type="Number" name="pr_price" id="pr_price" placeholder="Enter Price">
+            <br>
+            <input type="submit" name="Update">
+        </form>
+    </div>
+<div class="body-content">
+<div style="width:900px;height:230px;display:flex;">
+    <div id="photo_id_div" style="margin:10px;border:1px solid black;height:208px;width:215px;">
+        <img style="width:205px;height:205px;" src="{{ url_for('static', filename='images/company_256px.png', _external=True) }}"/>
+    </div>
+    <div style="margin:10px;border:1px solid black;height:208px;width:1040px;">
+        <div class="farmer_detail_div">
+            <span class="farmer_detail_span_entry">Company Name:</span>
+            <div class="farmer_detail_div_entry">{{ data['company_name'] }}</div>
+            <span class="farmer_detail_span_entry">CEO Name:</span>
+            <div class="farmer_detail_div_entry">{{ data['ceo_name'] }}</div>
+            <span class="farmer_detail_span_entry">Address:</span>
+            <div class="farmer_detail_div_entry">{{ data['address'] }}</div>
+        </div>
+        <div class="farmer_detail_div">
+            <span class="farmer_detail_span_entry">Dealer Name:</span>
+            <div class="farmer_detail_div_entry">{{ data['dealer_name'] }}</div>
+            <span class="farmer_detail_span_entry">Dealer Adress:</span>
+            <div class="farmer_detail_div_entry">{{ data['dealer_address'] }}</div>
+            <span class="farmer_detail_span_entry">Dealer Mobile No.:</span>
+            <div class="farmer_detail_div_entry">{{ data['dealer_mobile'] }}</div>
+        </div>
+        <div class="farmer_detail_div">
+            <span class="farmer_detail_span_entry">Dealer WhatsApp No.:</span>
+            <div class="farmer_detail_div_entry">{{ data['dealer_whatsapp_mobile'] }}</div>
+            <span class="farmer_detail_span_entry">Company Mobile No.:</span>
+            <div class="farmer_detail_div_entry">{{ data['mobile'] }}</div>
+            <span class="farmer_detail_span_entry">Company's Type.:</span>
+            <div class="farmer_detail_div_entry">{{ data['company_type'] }}</div>
+        </div>
+        <div class="farmer_detail_div">
+            <span class="farmer_detail_span_entry">Company Id:</span>
+            <div class="farmer_detail_div_entry">{{ data['cmp_id'] }}</div>
+            <span class="farmer_detail_span_entry">Company Mail:</span>
+            <div class="farmer_detail_div_entry">{{ data['email'] }}</div>
+        </div>
+        <div class="farmer_detail_div"></div>
+    </div>
+</div>  
+<div style="width:1040px;height:auto;margin-top:20px;">
+    <div style="display:flex;width:900px;margin-top:15px;">
+        <div class="boxes">Total product<br><span id="total_product" style="font-size:40px;font-weight:bold;"></span></div>
+        <img style="width:30px;height:30px;margin-left:850px;margin-top:50px;" src="{{ url_for('static', filename='images/seeds.png', _external=True) }}"/>
+        <button id="openPopupButton" style="color:#6CDB4D;margin-left:5px;margin-top:46px;font-size:19px;border:none;">+New</button>
+    </div>
+    <div class="line"></div>
+    <div id="products-detail" style="margin:30px;width:1200px">
+     </div>
+</div>
+</div>
+<script>
+    //fetch the compant product detail 
+
+    // JavaScript
+    window.addEventListener("load", product_list);
+    function product_list(){
+        fetch("http://127.0.0.1:8000/products/",{
+            method : 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Set the Content-Type header
+              },
+              body: JSON.stringify({
+                "pr_company": {{ data['cmp_id'] }}
+              }),
+        })
+        .then(response => {
+            if (!response.ok) {
+              throw new Error("Request failed with status: " + response.status);
+            }
+            return response.json(); // Parse the response as JSON
+          })
+          .then(data => {
+            // Handle the API response data
+            const listData = data.list
+            const listArray = JSON.parse(listData)
+            var length = listArray.length;
+            document.getElementById('total_product').textContent = length;
+            for (const item of listArray) {
+                createRow(item); // Create a row for each item in the array
+            }
+            // Process and display the data as needed
+          })
+          .catch(error => {
+            // Handle any errors
+            console.error("Error:", error);
+          });
+    }
+    function createRow(product){
+
+        const productsDetail = document.getElementById("products-detail");
+
+        const productDiv = document.createElement("div");
+        productDiv.classList.add("products");
+        productDiv.id = product.pr_id;
+
+        // Create the product image element
+        const img = document.createElement("img");
+        img.classList.add("product_img");
+        img.src = "{{ url_for('static', filename='images/company_256px.png', _external=True) }}";
+        productDiv.appendChild(img);
+
+        // Create the product name element
+        const productName = document.createElement("div");
+        productName.classList.add("product_name");
+        productName.textContent = product.pr_name;
+        productDiv.appendChild(productName);
+
+        // Create the product details element
+        const productDetails = document.createElement("div");
+        productDetails.classList.add("product_detail");
+
+        // Create the salt element
+        const saltDiv = document.createElement("div");
+        saltDiv.style.display = "flex";
+        const saltLabel = document.createElement("span");
+        saltLabel.style.fontWeight = "bold";
+        saltLabel.style.margin = "8px";
+        saltLabel.textContent = "Salt:";
+        const saltValue = document.createElement("div");
+        saltValue.classList.add("product_salt");
+        saltValue.textContent = product.pr_salt;
+        saltDiv.appendChild(saltLabel);
+        saltDiv.appendChild(saltValue);
+        productDetails.appendChild(saltDiv);
+
+        // Create the details element
+        const detailsDiv = document.createElement("div");
+        detailsDiv.style.display = "flex";
+        const detailsLabel = document.createElement("span");
+        detailsLabel.style.fontWeight = "bold";
+        detailsLabel.style.margin = "8px";
+        detailsLabel.textContent = "Details:";
+        const detailsValue = document.createElement("div");
+        detailsValue.classList.add("product_salt");
+        detailsValue.textContent = product.pr_detail;
+        detailsDiv.appendChild(detailsLabel);
+        detailsDiv.appendChild(detailsValue);
+        productDetails.appendChild(detailsDiv);
+
+        productDiv.appendChild(productDetails);
+
+        // Create the product price element
+        const productPrice = document.createElement("div");
+        productPrice.classList.add("product_price");
+        productPrice.textContent = product.pr_price;
+        productDiv.appendChild(productPrice);
+
+        productsDetail.appendChild(productDiv);
+    }
+
+
+
+
+    // Get the form element
+    const form = document.getElementById('add_product_form');
+
+    // Add a submit event listener to the form
+    form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting normally
+
+    // Create an object to store the form data
+    const formData = new FormData(form);
+
+    // Create an object to store the request options
+    const requestOptions = {
+        method: 'POST',
+        body: formData
+    };
+
+    // Send the request to the API endpoint
+    fetch('http://127.0.0.1:8000/new_product/', requestOptions)
+        .then(response => {
+        if (!response.ok) {
+            throw new Error('Request failed with status: ' + response.status);
+        }
+        return response.json(); // Parse the response as JSON
+        })
+        .then(data => {
+            document.getElementById('overlay').style.display = "none";
+            document.getElementById("add_product_window_popup").classList.remove("active");
+           // alert(data);
+        // Handle the API response data
+        console.log(data);
+        // Process and display the response data as needed
+        })
+        .catch(error => {
+            alert(error);
+        // Handle any errors
+        console.error('Error:', error);
+        });
+    });
+
+
+
+    openPopupButton.addEventListener("click", function() {
+        overlay.style.display = "block";
+        document.getElementById("add_product_window_popup").classList.add("active");
+    });
+
+    overlay.addEventListener("click", function() {
+        overlay.style.display = "none";
+        document.getElementById("add_product_window_popup").classList.remove("active");
+    });
+</script>
+{% endblock%}

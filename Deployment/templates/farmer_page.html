@@ -1,0 +1,288 @@
+{% extends "dashboard_base.html" %} {% block content %}
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="farmer_content_update_popup">
+    <div style="display:flex;">
+        <img src="{{ url_for('static', filename='images/farmer_256px.png', _external=True) }}">
+    </div>
+    <form class ="update-form-class">
+        <label>Date</label>
+        <input type="date" name="date" id="date" placeholder="Enter Date"><br>
+        <label>Content</label>
+        <input type="text" name="content" id="content" placeholder="Enter Content"><br>
+        <label>Total payment</label>
+        <input type="text" name="tpatment" id="tpayment" placeholder="Total Payment"><br>
+        <label>Total Paydown</label>
+        <input type="text" name="tpaydown" id="tpaydown" placeholder="Total Paydown"><br>
+        <label>Notes</label>
+        <input type="text" name="notes" id="notes" placeholder="Notes"><br>
+        <input type="submit" name="Update">
+    </form>
+</div>
+<div class="popup" id="farmer_update_window_popup">
+    <div style="display:flex;">
+        <img src="{{ url_for('static' , filename='images/farmer_256px.png',_external=True) }}"/>
+    </div>
+    <form class ="update-form-class">
+        <label>First Name</label>
+        <input type="text" name="fname" id="fname" placeholder="Enter First Name"><br>
+        <label>Middle Name</label>
+        <input type="text" name="mname" id="mname" placeholder="Enter middle Name"><br>
+        <label>Last Name</label>
+        <input type="text" name="mname" id="mname" placeholder="Enter middle Name"><br>
+        <label>Father Name</label>
+        <input type="text" name="faname" id="faname" placeholder="Enter Father's Name"><br>
+        <label>Mobile Number</label>
+        <input type="tel" name="mobile" id="mobile" placeholder="Enter Mobile Number"><br>
+        <label>Whatsapp Number</label>
+        <input type="tel" name="wmobile" id="wmobile" placeholder="Enter Whatsapp Number">
+        <br>
+        <label>Gender</label>
+        <select id="gender" name="gender" style="border:none;">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <input type="submit" name="Update">
+    </form>
+</div>
+<div class="body-content">
+<div style="width:1300px;height:230px;display:flex;">
+    <div id="photo_id_div" style="margin:10px;border:1px solid black;height:208px;width:208px;">
+        <img style="width:208px;height:208px;" src="{{ url_for('static', filename='images/farmer_256px.png', _external=True) }}"/>
+    </div>
+    <div style="margin:10px;border:1px solid black;height:208px;width:1406px;">
+        <div class="farmer_detail_div">
+            <span class="farmer_detail_span_entry">Name:</span>
+            <div class="farmer_detail_div_entry">{{data['first_name']}}</div>
+            <span class="farmer_detail_span_entry">Middle Name:</span>
+            <div class="farmer_detail_div_entry">{{ data['middle_name'] }}</div>
+            <span class="farmer_detail_span_entry">Last Name:</span>
+            <div class="farmer_detail_div_entry">{{ data['last_name'] }}</div>
+        </div>
+        <div class="farmer_detail_div">
+            <span class="farmer_detail_span_entry">Father's Name:</span>
+            <div class="farmer_detail_div_entry">{{ data['father_name'] }}</div>
+            <span class="farmer_detail_span_entry">Gender:</span>
+            <div class="farmer_detail_div_entry">{{ data['gender'] }}</div>
+            <span class="farmer_detail_span_entry">Address:</span>
+            <div class="farmer_detail_div_entry">{{ data['address'] }}</div>
+        </div>
+        <div class="farmer_detail_div">
+            <span class="farmer_detail_span_entry">Mobile No.:</span>
+            <div class="farmer_detail_div_entry">{{ data['mobile'] }}</div>
+            <span class="farmer_detail_span_entry">Whatsapp No.:</span>
+            <div class="farmer_detail_div_entry">{{ data['whatsapp_mobile'] }}</div>
+            <span class="farmer_detail_span_entry">Aso. Shopkeeper.:</span>
+            <div class="farmer_detail_div_entry"></div>
+        </div>
+        <div class="farmer_detail_div">
+            <span class="farmer_detail_span_entry">Farmer Id:</span>
+            <div class="farmer_detail_div_entry">{{ data['fm_id'] }}</div>
+            <span class="farmer_detail_span_entry">Email:</span>
+            <div class="farmer_detail_div_entry">{{ data['email'] }}</div>
+            <span class="farmer_detail_span_entry">Added Date:</span>
+            <div class="farmer_detail_div_entry">{{ data['added_date'] }}</div>
+        </div>
+        <div class="farmer_detail_div"></div>
+    </div>
+</div>  
+<div>
+    <button style="margin-top:10px;margin-left:10px;border:none;" id="openPopupButton"><img src="{{ url_for('static', filename='images/editing.png', _external=True) }}"></button>
+</div>
+<div style="width:1300px;height:auto;margin-top:20px;">
+    <div style="display:flex;margin-top:15px;">
+        <div class="boxes">Total payment<br><span style="font-size:40px;font-weight:bold;" id="paymentSpan">0</span></div>
+        <div class="boxes">Total paydown<br><span style="font-size:40px;font-weight:bold;" id="paydownSpan">0</span></div>
+        <div class="boxes">Remaining Amount<br><span style="font-size:40px;font-weight:bold;" id="remainingSpan">0</span></div>
+        <div style="margin-left:350px;margin-top:30px;display:flex;">
+            <button class="button-1"  onclick="templates()">Templates</button>
+            <button class="button-1" onclick="product_list()">Add Content</button>
+        </div>
+        
+    </div>
+    <div id="table-content" style="margin:30px;">
+        <table id="transaction-list">
+            <tr style="border-bottom:1px solid #ccc;">
+                <th class ="col" style="width:10px;">S.N</th>
+                <th class = "col" style="width:200px;">Date</th>
+                <th class = "col" style="width:400px;">Content</th>
+                <th class = "col" style="width:150px;">Total payment(INR)</th>
+                <th class = "col" style="width:150px;">Total paydown(INR)</th>
+                <th class = "col" style="width:150px;">Notes</th>
+                <th class = "col" style="width:100px;">Action</th>
+            </tr>
+        </table>
+     </div>
+</div>
+</div>
+<script>
+
+    window.addEventListener('load', fetchingFarmerTransaction);
+    var totalPayment = 0;
+    var totalPaydown = 0;
+
+    function templates(){
+        alert("done");
+        fetch("http://127.0.0.1:5000/templates/" + {{ data['fm_id']}},{
+            method: 'GET'
+        } )
+        .then(response => {
+            if(response.ok){
+                window.location.href = response.url;
+            }
+            else{
+                alert("error in fetching product list");
+                console.error('Error:', response.statusText);
+            }
+        })
+        .catch(error => {
+            alert(error);
+            console.error("error : ",error);
+        })
+    }
+
+    function createRow(data){
+        const row = document.createElement('tr');
+
+        const snCell = document.createElement('td');
+        snCell.style.paddingLeft = "10px";
+        snCell.textContent = data.tns_id;
+        row.appendChild(snCell);
+
+        const dateCell = document.createElement('td');
+        dateCell.style.paddingLeft = "10px";
+        dateCell.textContent = data.tns_date.slice(0,10);
+        row.appendChild(dateCell);
+
+        const contentCell = document.createElement('td');
+        contentCell.style.paddingLeft = "10px";
+        contentCell.textContent = data.product_list;
+        row.appendChild(contentCell);
+
+
+        const paymentCell = document.createElement('td');
+        paymentCell.style.paddingLeft = "10px";
+        paymentCell.textContent = data.total_transaction;
+        row.appendChild(paymentCell);
+
+        totalPayment += data.total_transaction;
+
+        const paydownCell = document.createElement('td');
+        paydownCell.style.paddingLeft = "10px";
+        paydownCell.textContent = data.paydown;
+        row.appendChild(paydownCell);
+
+        totalPaydown += data.paydown;
+
+        const notesCell = document.createElement('td');
+        notesCell.style.paddingLeft = "10px";
+        notesCell.textContent = "";
+        row.appendChild(notesCell);
+
+        const actionCell = document.createElement("td");
+        const actionDiv = document.createElement("div");
+        actionDiv.style.display = "flex";
+        actionDiv.style.marginLeft = "10px";
+        actionDiv.innerHTML = `
+        <button class="button" id="update_content">
+            <img style="width:20px;height:20px;margin-left:9px;" src="{{ url_for('static', filename='images/editing.png', _external=True) }}"/>
+        </button>
+        <button class="button" onclick="">
+            <img style="width:20px;height:20px;margin-left:9px;" src="{{ url_for('static', filename='images/delete.png', _external=True) }}"/>
+        </button>
+        `;
+        actionCell.appendChild(actionDiv);
+        row.appendChild(actionCell);
+
+        const table = document.getElementById('transaction-list');
+        table.appendChild(row);
+
+        const update_content = actionDiv.querySelector('#update_content');
+        const overlay = document.getElementById('overlay');
+
+        update_content.addEventListener('click', function() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('farmer_content_update_popup').classList.add('active');
+          });
+          
+          overlay.addEventListener('click', function() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('farmer_content_update_popup').classList.remove('active');
+          });
+
+    }
+
+    function fetchingFarmerTransaction() {
+    const id = {{ data['fm_id'] }};
+    
+    fetch("http://127.0.0.1:8000/farmer_transaction/", {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 'id': id })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Request failed with status: " + response.status);
+          }
+          return response.json();
+    })
+    .then(data => {
+        const listData = data.list;
+        const listArray = JSON.parse(listData);
+        const len = listArray.length;
+        for(const tr of listArray){
+            createRow(tr);
+        }
+        document.getElementById('paymentSpan').textContent = totalPayment;
+        document.getElementById('paydownSpan').textContent = totalPaydown;
+        document.getElementById('remainingSpan').textContent = totalPayment - totalPaydown;
+        console.log(data);
+    })
+    .catch(error => {
+        console.error("error: ", error);
+    });
+    }
+
+    function product_list(){
+        fetch('http://127.0.0.1:5000/product_list/'+{{ data['fm_id'] }}, {
+            method: 'GET',
+        })
+        .then(response => {
+            if (response.ok) {
+                // Open the new page in a new tab or window
+                // alert(response.url);
+
+                window.location.href = response.url
+                //window.open(response.url, '_blank');
+            } else {
+                alert("error in fetching product list");
+                console.error('Error:', response.statusText);
+            }
+        })
+        .catch(error => {
+            alert(error);
+            console.error('Error:', error);
+        });
+
+    }
+    document.getElementById('openPopupButton').addEventListener('click', function() {
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('farmer_update_window_popup').classList.add('active');
+      });
+      
+      document.getElementById('overlay').addEventListener('click', function() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('farmer_update_window_popup').classList.remove('active');
+      });
+      document.getElementById('update_content').addEventListener('click', function() {
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('farmer_content_update_popup').classList.add('active');
+      });
+      
+      document.getElementById('overlay').addEventListener('click', function() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('farmer_content_update_popup').classList.remove('active');
+      });
+ </script>
+{% endblock%}
